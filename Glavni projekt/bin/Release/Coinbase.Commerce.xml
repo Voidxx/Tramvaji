@@ -1,0 +1,935 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Coinbase.Commerce</name>
+    </assembly>
+    <members>
+        <member name="T:Coinbase.Commerce.CommerceApi">
+            <summary>
+            The main class to use when accessing the Coinbase Commerce API. API Docs: https://commerce.coinbase.com/docs/api/
+            </summary>
+        </member>
+        <member name="F:Coinbase.Commerce.CommerceApi.ApiVersionDate">
+            <summary>
+            All API calls should be made with a X-CC-Version header which guarantees that your call is using the correct API version. Version is passed in as a date (UTC) of the implementation in YYYY-MM-DD format.
+            If no version is passed, the latest API version will be used and a warning will be included in the response.Under no circumstance should you always pass in the current date, as that will return the current version which might break your implementation.
+            </summary>
+        </member>
+        <member name="F:Coinbase.Commerce.CommerceApi.Endpoint">
+            <summary>
+            API endpoint at coinbase
+            </summary>
+        </member>
+        <member name="P:Coinbase.Commerce.CommerceApi.ChargesEndpoint">
+            <summary>
+            API Endpoint
+            </summary>
+        </member>
+        <member name="P:Coinbase.Commerce.CommerceApi.CheckoutEndpoint">
+            <summary>
+            API Endpoint
+            </summary>
+        </member>
+        <member name="P:Coinbase.Commerce.CommerceApi.InvoicesEndpoint">
+            <summary>
+            API Endpoint
+            </summary>
+        </member>
+        <member name="P:Coinbase.Commerce.CommerceApi.EventsEndpoint">
+            <summary>
+            API Endpoint
+            </summary>
+        </member>
+        <member name="F:Coinbase.Commerce.CommerceApi.apiKey">
+            <summary>
+            User's API Key
+            </summary>
+        </member>
+        <member name="M:Coinbase.Commerce.CommerceApi.#ctor(System.String)">
+            <summary>
+            The main class to make calls to the coinbase commerce API.
+            API Documentation here: https://commerce.coinbase.com/docs/api/
+            GitHub Project URL here: https://github.com/bchavez/Coinbase.Commerce
+            </summary>
+            <param name="apiKey">Your secret API key. See: https://commerce.coinbase.com/docs/api/#authentication </param>
+        </member>
+        <member name="M:Coinbase.Commerce.CommerceApi.EnableFiddlerDebugProxy(System.String)">
+            <summary>
+            Enable HTTP debugging via Fiddler. Ensure Tools > Fiddler Options... > Connections is enabled and has a port configured.
+            Then, call this method with the following URL format: http://localhost.:PORT where PORT is the port number Fiddler proxy
+            is listening on. (Be sure to include the period after the localhost).
+            </summary>
+            <param name="proxyUrl">The full proxy URL Fiddler proxy is listening on. IE: http://localhost.:8888 - The period after localhost is important to include.</param>
+        </member>
+        <member name="M:Coinbase.Commerce.CommerceApi.ListChargesAsync(System.Nullable{Coinbase.Commerce.Models.ListOrder},System.Nullable{System.Int32},System.String,System.String,System.Threading.CancellationToken)">
+            <summary>
+            List all the charges. All GET endpoints which return an object list
+            support cursor based pagination with pagination information
+            inside a pagination object. This means that to get all objects,
+            you need to paginate through the results by always using the id
+            of the last resource in the list as a starting_after parameter
+            for the next call. To make it easier, the API will construct
+            the next call into next_uri together with all the currently
+            used pagination parameters. You know that you have paginated
+            all the results when the response’s next_uri is empty.
+            </summary>
+            <param name="listOrder">Order of the resources in the response. desc (default), asc</param>
+            <param name="limit">umber of results per call. Accepted values: 0 - 100. Default 25</param>
+            <param name="startingAfter">A cursor for use in pagination. starting_after is a resource ID that defines your place in the list.</param>
+            <param name="endingBefore">A cursor for use in pagination. ending_before is a resource ID that defines your place in the list.</param>
+        </member>
+        <member name="M:Coinbase.Commerce.CommerceApi.GetChargeAsync(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Retrieves the details of a charge that has been previously
+            created. Supply the unique charge code that was returned when
+            the charge was created. This information is also returned when
+            a charge is first created.
+            </summary>
+            <param name="chargeCode">The Charge.Code</param>
+        </member>
+        <member name="M:Coinbase.Commerce.CommerceApi.CreateChargeAsync(Coinbase.Commerce.Models.CreateCharge,System.Threading.CancellationToken)">
+            <summary>
+            To get paid in cryptocurrency, you need to create a charge object 
+            and provide the user with a cryptocurrency address to 
+            which they must send cryptocurrency. Once a charge is 
+            created a customer must broadcast a payment to the
+            blockchain before the charge expires.
+            </summary>
+            <param name="charge">The <seealso cref="T:Coinbase.Commerce.Models.CreateCharge"/> object.</param>
+        </member>
+        <member name="M:Coinbase.Commerce.CommerceApi.CancelChargeAsync(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Cancels a charge that has been previously created.
+            Supply the unique charge code that was returned when the charge was created.
+            Note: Only new charges can be successfully canceled.
+            Once payment is detected, charge can no longer be canceled.
+            </summary>
+            <param name="chargeCode">The Charge.Code</param>
+            <returns></returns>
+        </member>
+        <member name="M:Coinbase.Commerce.CommerceApi.ResolveChargeAsync(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Resolve a charge that has been previously marked as unresolved.
+            Supply the unique charge code that was returned when the charge was created.
+            Note: Only unresolved charges can be successfully resolved.
+            For more on unresolved charges, check out at <see href="https://commerce.coinbase.com/docs/api/#charge-timeline">Charge timeline</see>
+            </summary>
+            <param name="chargeCode">The Charge.Code</param>
+            <returns></returns>
+        </member>
+        <member name="M:Coinbase.Commerce.CommerceApi.ListCheckoutsAsync(System.Nullable{Coinbase.Commerce.Models.ListOrder},System.Nullable{System.Int32},System.String,System.String,System.Threading.CancellationToken)">
+            <summary>
+            List all the checkouts. All GET endpoints which return an object list
+            support cursor based pagination with pagination information
+            inside a pagination object. This means that to get all objects,
+            you need to paginate through the results by always using the id
+            of the last resource in the list as a starting_after parameter
+            for the next call. To make it easier, the API will construct
+            the next call into next_uri together with all the currently
+            used pagination parameters. You know that you have paginated
+            all the results when the response’s next_uri is empty.
+            </summary>
+            <param name="listOrder">Order of the resources in the response. desc (default), asc</param>
+            <param name="limit">umber of results per call. Accepted values: 0 - 100. Default 25</param>
+            <param name="startingAfter">A cursor for use in pagination. starting_after is a resource ID that defines your place in the list.</param>
+            <param name="endingBefore">A cursor for use in pagination. ending_before is a resource ID that defines your place in the list.</param>
+        </member>
+        <member name="M:Coinbase.Commerce.CommerceApi.GetCheckoutAsync(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Show a single checkout
+            </summary>
+            <param name="checkoutId">The checkout id</param>
+        </member>
+        <member name="M:Coinbase.Commerce.CommerceApi.CreateCheckoutAsync(Coinbase.Commerce.Models.CreateCheckout,System.Threading.CancellationToken)">
+            <summary>
+            Create a new checkout.
+            </summary>
+            <param name="checkout">The checkout to create</param>
+        </member>
+        <member name="M:Coinbase.Commerce.CommerceApi.UpdateCheckoutAsync(System.String,Coinbase.Commerce.Models.UpdateCheckout,System.Threading.CancellationToken)">
+            <summary>
+            Update a checkout.
+            </summary>
+            <param name="checkoutId">The checkout id</param>
+            <param name="checkout">The checkout to update</param>
+        </member>
+        <member name="M:Coinbase.Commerce.CommerceApi.DeleteCheckoutAsync(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Delete a checkout.
+            </summary>
+            <param name="checkoutId">The checkout id.</param>
+        </member>
+        <member name="M:Coinbase.Commerce.CommerceApi.ListInvoicesAsync(System.Nullable{Coinbase.Commerce.Models.ListOrder},System.Nullable{System.Int32},System.String,System.String,System.Threading.CancellationToken)">
+            <summary>
+            Lists all the invoices
+            </summary>
+            <param name="listOrder">Order of the resources in the response. desc (default), asc</param>
+            <param name="limit">umber of results per call. Accepted values: 0 - 100. Default 25</param>
+            <param name="startingAfter">A cursor for use in pagination. starting_after is a resource ID that defines your place in the list.</param>
+            <param name="endingBefore">A cursor for use in pagination. ending_before is a resource ID that defines your place in the list.</param>
+        </member>
+        <member name="M:Coinbase.Commerce.CommerceApi.GetInvoiceAsync(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Retrieves the details of an invoice that has been previously created. Supply the unique
+            short code that was returned when the invoice was created. This information is
+            also returned when an invoice is first created.
+            </summary>
+            <param name="codeOrId">Invoice code or ID</param>
+        </member>
+        <member name="M:Coinbase.Commerce.CommerceApi.CreateInvoiceAsync(Coinbase.Commerce.Models.CreateInvoice,System.Threading.CancellationToken)">
+            <summary>
+            To send an invoice in cryptocurrency, you need to create an invoice object and provide
+            the user with the hosted url where they will be able to pay. Once an invoice is
+            viewed at the hosted url, a charge will be generated on the invoice.
+            </summary>
+            <param name="invoice">The invoice to create</param>
+            <returns></returns>
+        </member>
+        <member name="M:Coinbase.Commerce.CommerceApi.VoidInvoiceAsync(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Voids an invoice that has been previously created. Supply the unique invoice code that
+            was returned when the invoice was created.
+            Note: Only invoices with OPEN or VIEWED status can be voided. Once a payment is detected,
+            the invoice can no longer be voided.
+            </summary>
+            <param name="codeOrId">Invoice code or id</param>
+        </member>
+        <member name="M:Coinbase.Commerce.CommerceApi.ResolveInvoiceAsync(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Resolve an invoice that has been previously marked as unresolved. Supply the unique
+            invoice code that was returned when the invoice was created.
+            Note: Only invoices with an unresolved charge can be successfully resolved.For more
+            on unresolved charges, check out at Charge timeline: https://commerce.coinbase.com/docs/api/#charge-timeline
+            </summary>
+            <param name="codeOrId">Invoice code or id</param>
+        </member>
+        <member name="M:Coinbase.Commerce.CommerceApi.ListEventsAsync(System.Nullable{Coinbase.Commerce.Models.ListOrder},System.Nullable{System.Int32},System.String,System.String,System.Threading.CancellationToken)">
+            <summary>
+            List all events. All GET endpoints which return an object list
+            support cursor based pagination with pagination information
+            inside a pagination object. This means that to get all objects,
+            you need to paginate through the results by always using the id
+            of the last resource in the list as a starting_after parameter
+            for the next call. To make it easier, the API will construct
+            the next call into next_uri together with all the currently
+            used pagination parameters. You know that you have paginated
+            all the results when the response’s next_uri is empty.
+            </summary>
+            <param name="listOrder">Order of the resources in the response. desc (default), asc</param>
+            <param name="limit">umber of results per call. Accepted values: 0 - 100. Default 25</param>
+            <param name="startingAfter">A cursor for use in pagination. starting_after is a resource ID that defines your place in the list.</param>
+            <param name="endingBefore">A cursor for use in pagination. ending_before is a resource ID that defines your place in the list.</param>
+        </member>
+        <member name="M:Coinbase.Commerce.CommerceApi.GetEventAsync(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Get an event with a specific id.
+            </summary>
+            <param name="eventId"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Coinbase.Commerce.HeaderNames">
+            <summary>
+            Well-known header names when communicating with Coinbase Commerce API over HTTP.
+            </summary>
+        </member>
+        <member name="F:Coinbase.Commerce.HeaderNames.WebhookSignature">
+            <summary>
+            Every Coinbase Commerce webhook request includes an X-CC-Webhook-Signature header.
+            <seealso cref="T:Coinbase.Commerce.WebhookHelper"/> class for verifying the request header signature value.
+            This header contains the SHA256 HMAC signature of the raw request payload,
+            computed using your webhook shared secret as the key.
+            You can obtain your shared webhook secret from your settings page.
+            Always make sure that you verify the webhook signature before acting
+            on it inside your system.
+            </summary>
+        </member>
+        <member name="F:Coinbase.Commerce.HeaderNames.ApiKey">
+            <summary>
+            Most requests to the Commerce API must be authenticated with an API key.
+            You can create an API key in your Settings page after creating a Coinbase Commerce account
+            Authenticated API requests should be made with a X-CC-Api-Key header. Your secret API key should be passed as the value.
+            If authentication fails, a JSON object with an error message will be returned as a response along with HTTP status 401.
+            </summary>
+        </member>
+        <member name="F:Coinbase.Commerce.HeaderNames.Version">
+            <summary>
+            All API calls should be made with a X-CC-Version header which guarantees
+            that your call is using the correct API version. Version is passed in as
+            a date (UTC) of the implementation in YYYY-MM-DD format. If no version is
+            passed, the latest API version will be used and a warning will be included
+            in the response. Under no circumstance should you always pass in the
+            current date, as that will return the current version which might break
+            your implementation.
+            </summary>
+        </member>
+        <member name="T:Coinbase.Commerce.Models.Block">
+            <summary>
+            Block information about a payment.
+            </summary>
+        </member>
+        <member name="P:Coinbase.Commerce.Models.Block.Height">
+            <summary>
+            Block height
+            </summary>
+        </member>
+        <member name="P:Coinbase.Commerce.Models.Block.Hash">
+            <summary>
+            Block hash
+            </summary>
+        </member>
+        <member name="P:Coinbase.Commerce.Models.Block.ConfirmationsAccumulated">
+            <summary>
+            How many block confirmations there have been
+            </summary>
+        </member>
+        <member name="P:Coinbase.Commerce.Models.Block.ConfirmationsRequired">
+            <summary>
+            How many are required to secure the transaction on the blockchain
+            </summary>
+        </member>
+        <member name="T:Coinbase.Commerce.Models.Charge">
+            <summary>
+            To request a cryptocurrency payment, you create a charge. You can create
+            and view charges. Since cryptocurrency payments are push payments,
+            a charge will expire after a waiting period (payment window) if no payment
+            has been detected. Charges are identified by a unique code.
+            </summary>
+        </member>
+        <member name="P:Coinbase.Commerce.Models.Charge.Id">
+            <summary>
+            Charge UUID
+            </summary>
+        </member>
+        <member name="P:Coinbase.Commerce.Models.Charge.Resource">
+            <summary>
+            Resource name: "charge"
+            </summary>
+        </member>
+        <member name="P:Coinbase.Commerce.Models.Charge.Code">
+            <summary>
+            Charge user-friendly primary key
+            </summary>
+        </member>
+        <member name="P:Coinbase.Commerce.Models.Charge.Name">
+            <summary>
+            Charge name
+            </summary>
+        </member>
+        <member name="P:Coinbase.Commerce.Models.Charge.Description">
+            <summary>
+            Charge description
+            </summary>
+        </member>
+        <member name="P:Coinbase.Commerce.Models.Charge.LogoUrl">
+            <summary>
+            Charge image URL
+            </summary>
+        </member>
+        <member name="P:Coinbase.Commerce.Models.Charge.HostedUrl">
+            <summary>
+            Hosted charge URL
+            </summary>
+        </member>
+        <member name="P:Coinbase.Commerce.Models.Charge.CreatedAt">
+            <summary>
+            Charge creation time
+            </summary>
+        </member>
+        <member name="P:Coinbase.Commerce.Models.Charge.ExpiresAt">
+            <summary>
+            Charge expiration time
+            </summary>
+        </member>
+        <member name="P:Coinbase.Commerce.Models.Charge.ConfirmedAt">
+            <summary>
+            Charge confirmation time
+            </summary>
+        </member>
+        <member name="P:Coinbase.Commerce.Models.Charge.Checkout">
+            <summary>
+            Associated checkout resource
+            </summary>
+        </member>
+        <member name="P:Coinbase.Commerce.Models.Charge.Timeline">
+            <summary>
+            Array of status update objects. Every charge object has a timeline of status updates.
+            </summary>
+        </member>
+        <member name="P:Coinbase.Commerce.Models.Charge.Metadata">
+            <summary>
+            Metadata associated with the charge
+            </summary>
+        </member>
+        <member name="P:Coinbase.Commerce.Models.Charge.PricingType">
+            <summary>
+            If a charge has a fixed_price pricing type, then there will be a pricing object 
+            associated with it. Pricing object is composed of local price which is set by 
+            the merchant in their native fiat currency and corresponding prices in every 
+            cryptocurrency that the merchant has activated for their account
+            </summary>
+        </member>
+        <member name="P:Coinbase.Commerce.Models.Charge.Pricing">
+            <summary>
+            Charge price information object
+            </summary>
+        </member>
+        <member name="P:Coinbase.Commerce.Models.Charge.Payments">
+            <summary>
+            Array of charge payment objects
+            </summary>
+        </member>
+        <member name="P:Coinbase.Commerce.Models.Charge.Addresses">
+            <summary>
+            Set of addresses associated with the charge. For every active cryptocurrency 
+            for a charge addresses object will contain an address that the buyer will 
+            be expected to pay to
+            </summary>
+        </member>
+        <member name="T:Coinbase.Commerce.Models.Checkout">
+            <summary>
+            Checkouts make it possible to sell a single fixed price item or accept
+            arbitrary amounts of cryptocurrency very easily. Checkouts can have
+            many charges and each charge is automatically generated on a per customer
+            basis. Checkouts can also be quickly integrated into a website by embedding
+            payment buttons. Each checkout has a publicly accessible hosted page that
+            can be shared with anyone.
+            </summary>
+        </member>
+        <member name="P:Coinbase.Commerce.Models.Checkout.Id">
+            <summary>
+            Checkout UUID
+            </summary>
+        </member>
+        <member name="P:Coinbase.Commerce.Models.Checkout.Resource">
+            <summary>
+            Resource name: "checkout"
+            </summary>
+        </member>
+        <member name="P:Coinbase.Commerce.Models.Checkout.Name">
+            <summary>
+            Checkout name
+            </summary>
+        </member>
+        <member name="P:Coinbase.Commerce.Models.Checkout.Description">
+            <summary>
+            Checkout description
+            </summary>
+        </member>
+        <member name="P:Coinbase.Commerce.Models.Checkout.LogoUrl">
+            <summary>
+            Checkout image URL
+            </summary>
+        </member>
+        <member name="P:Coinbase.Commerce.Models.Checkout.RequestedInfo">
+            <summary>
+            Array of strings specifying what information the merchants wants to 
+            collect from the buyers: name, email
+            </summary>
+        </member>
+        <member name="P:Coinbase.Commerce.Models.Checkout.PricingType">
+            <summary>
+            If a charge has a fixed_price pricing type, then there will be a pricing 
+            object associated with it. Pricing object is composed of local price which 
+            is set by the merchant in their native fiat currency and corresponding 
+            prices in every cryptocurrency that the merchant has activated for their account
+            </summary>
+        </member>
+        <member name="P:Coinbase.Commerce.Models.Checkout.LocalPrice">
+            <summary>
+            If <seealso cref="P:Coinbase.Commerce.Models.Checkout.PricingType"/> is fixed_price, then this field will specify the price.
+            Pricing object is composed of local price which is set by the
+            merchant in their native fiat currency and corresponding prices in every
+            cryptocurrency that the merchant has activated for their account
+            </summary>
+        </member>
+        <member name="P:Coinbase.Commerce.Models.Checkout.RequestedEmail">
+            <summary>
+            Helper property. Checks if the "email" was requested in <seealso cref="P:Coinbase.Commerce.Models.Checkout.RequestedInfo"/>.
+            </summary>
+        </member>
+        <member name="P:Coinbase.Commerce.Models.Checkout.RequestedName">
+            <summary>
+            Helper property. Checks if the "name" was requested in <seealso cref="P:Coinbase.Commerce.Models.Checkout.RequestedInfo"/>.
+            </summary>
+        </member>
+        <member name="P:Coinbase.Commerce.Models.CreateCharge.Name">
+            <summary>
+            Charge name
+            </summary>
+        </member>
+        <member name="P:Coinbase.Commerce.Models.CreateCharge.Description">
+            <summary>
+            Charge description
+            </summary>
+        </member>
+        <member name="P:Coinbase.Commerce.Models.CreateCharge.LocalPrice">
+            <summary>
+            If <seealso cref="P:Coinbase.Commerce.Models.CreateCharge.PricingType"/> is fixed_price, then this field will specify the price.
+            Pricing object is composed of local price which is set by the
+            merchant in their native fiat currency and corresponding prices in every
+            cryptocurrency that the merchant has activated for their account
+            </summary>
+        </member>
+        <member name="P:Coinbase.Commerce.Models.CreateCharge.PricingType">
+            <summary>
+            If a charge has a fixed_price pricing type, then there will be a pricing object
+            associated with it. Pricing object is composed of local price which is set by the
+            merchant in their native fiat currency and corresponding prices in every
+            cryptocurrency that the merchant has activated for their account
+            </summary>
+        </member>
+        <member name="P:Coinbase.Commerce.Models.CreateCharge.Metadata">
+            <summary>
+            Metadata associated with the charge
+            </summary>
+        </member>
+        <member name="P:Coinbase.Commerce.Models.CreateCharge.RedirectUrl">
+            <summary>
+            The URL to redirect the user when payment completes
+            </summary>
+        </member>
+        <member name="P:Coinbase.Commerce.Models.CreateCheckout.Name">
+            <summary>
+            Checkout name
+            </summary>
+        </member>
+        <member name="P:Coinbase.Commerce.Models.CreateCheckout.Description">
+            <summary>
+            More detailed description
+            </summary>
+        </member>
+        <member name="P:Coinbase.Commerce.Models.CreateCheckout.LocalPrice">
+            <summary>
+            If <seealso cref="P:Coinbase.Commerce.Models.CreateCheckout.PricingType"/> is fixed_price, then this field will specify the price.
+            Pricing object is composed of local price which is set by the
+            merchant in their native fiat currency and corresponding prices in every
+            cryptocurrency that the merchant has activated for their account
+            </summary>
+        </member>
+        <member name="P:Coinbase.Commerce.Models.CreateCheckout.PricingType">
+            <summary>
+            If a charge has a fixed_price pricing type, then there will be a pricing 
+            object associated with it. Pricing object is composed of local price which 
+            is set by the merchant in their native fiat currency and corresponding prices 
+            in every cryptocurrency that the merchant has activated for their account
+            </summary>
+        </member>
+        <member name="P:Coinbase.Commerce.Models.CreateCheckout.RequestedInfo">
+            <summary>
+            Information to collect from the customer
+            </summary>
+        </member>
+        <member name="P:Coinbase.Commerce.Models.CreateCheckout.RequestEmail">
+            <summary>
+            Helper property.
+            When set to true, adds "email" to <seealso cref="P:Coinbase.Commerce.Models.CreateCheckout.RequestedInfo"/>.
+            When set to false, removes "email" from <seealso cref="P:Coinbase.Commerce.Models.CreateCheckout.RequestedInfo"/>.
+            </summary>
+        </member>
+        <member name="P:Coinbase.Commerce.Models.CreateCheckout.RequestName">
+            <summary>
+            Helper property.
+            When set to true, adds "name" to <seealso cref="P:Coinbase.Commerce.Models.CreateCheckout.RequestedInfo"/>.
+            When set to false, removes "name" from <seealso cref="P:Coinbase.Commerce.Models.CreateCheckout.RequestedInfo"/>.
+            </summary>
+        </member>
+        <member name="P:Coinbase.Commerce.Models.CreateInvoice.BusinessName">
+            <summary>
+            Your business name
+            </summary>
+        </member>
+        <member name="P:Coinbase.Commerce.Models.CreateInvoice.CustomerEmail">
+            <summary>
+            The email address of the customer
+            </summary>
+        </member>
+        <member name="P:Coinbase.Commerce.Models.CreateInvoice.CustomerName">
+            <summary>
+            The name of the customer
+            </summary>
+        </member>
+        <member name="P:Coinbase.Commerce.Models.CreateInvoice.LocalPrice">
+            <summary>
+            Price in local fiat currency
+            </summary>
+        </member>
+        <member name="P:Coinbase.Commerce.Models.CreateInvoice.Memo">
+            <summary>
+            A memo for the invoice
+            </summary>
+        </member>
+        <member name="T:Coinbase.Commerce.Models.Error">
+            <summary>
+            All error messages include a type identifier and a human readable message.
+            </summary>
+        </member>
+        <member name="P:Coinbase.Commerce.Models.Error.Type">
+            <summary>
+            validation_error with status code 400 is returned when the validation of the resource fails on POST or PUT requests.
+            </summary>
+        </member>
+        <member name="T:Coinbase.Commerce.Models.Invoice">
+            <summary>
+            An invoice can be created and sent to customers for payment by constructing a url with the
+            generated 8 character short-code. Invoice url's have the format https://commerce.coinbase.com/invoices/:code.
+            Invoice urls can be sent to the payee to collect payment, and will associate a new charge on the invoice
+            object once it has been viewed. Charges associated with invoices will automatically refresh their 1-hour
+            payment window if they expire.
+            </summary>
+        </member>
+        <member name="P:Coinbase.Commerce.Models.Invoice.Id">
+            <summary>
+            Charge UUID
+            </summary>
+        </member>
+        <member name="P:Coinbase.Commerce.Models.Invoice.Resource">
+            <summary>
+            Resource name: "invoice"
+            </summary>
+        </member>
+        <member name="P:Coinbase.Commerce.Models.Invoice.Code">
+            <summary>
+            Charge user-friendly primary key
+            </summary>
+        </member>
+        <member name="P:Coinbase.Commerce.Models.Invoice.Status">
+            <summary>
+            Status of the invoice
+            </summary>
+        </member>
+        <member name="P:Coinbase.Commerce.Models.Invoice.BusinessName">
+            <summary>
+            Your business name
+            </summary>
+        </member>
+        <member name="P:Coinbase.Commerce.Models.Invoice.CustomerName">
+            <summary>
+            Customer's name (optional)
+            </summary>
+        </member>
+        <member name="P:Coinbase.Commerce.Models.Invoice.CustomerEmail">
+            <summary>
+            Customer's email
+            </summary>
+        </member>
+        <member name="P:Coinbase.Commerce.Models.Invoice.Memo">
+            <summary>
+            Invoice memo
+            </summary>
+        </member>
+        <member name="P:Coinbase.Commerce.Models.Invoice.LocalPrice">
+            <summary>
+            Invoice price information object
+            </summary>
+        </member>
+        <member name="P:Coinbase.Commerce.Models.Invoice.HostedUrl">
+            <summary>
+            Hosted invoice URL
+            </summary>
+        </member>
+        <member name="P:Coinbase.Commerce.Models.Invoice.CreatedAt">
+            <summary>
+            Invoice creation time
+            </summary>
+        </member>
+        <member name="P:Coinbase.Commerce.Models.Invoice.UpdatedAt">
+            <summary>
+            Invoice updated time
+            </summary>
+        </member>
+        <member name="P:Coinbase.Commerce.Models.Invoice.Charge">
+            <summary>
+            Associated charge resource (only exists if viewed)
+            </summary>
+        </member>
+        <member name="P:Coinbase.Commerce.Models.Json.ExtraJson">
+            <summary>
+            Extra data for/from the JSON serializer/deserializer to included with the object model.
+            </summary>
+        </member>
+        <member name="P:Coinbase.Commerce.Models.JsonResponse.Error">
+            <summary>
+            All error messages include a type identifier and a human readable message.
+            </summary>
+        </member>
+        <member name="P:Coinbase.Commerce.Models.JsonResponse.Warnings">
+            <summary>
+            Responses can include a warnings parameter to notify the developer
+            of best practices, implementation suggestions or deprecation warnings.
+            While you don’t need show warnings to the user, they are usually
+            something you need to act on.
+            </summary>
+        </member>
+        <member name="M:Coinbase.Commerce.Models.JsonResponse.HasError">
+            <summary>
+            Checks if the response has errors.
+            </summary>
+        </member>
+        <member name="M:Coinbase.Commerce.Models.JsonResponse.HasWarnings">
+            <summary>
+            Checks if the response has warnings.
+            </summary>
+        </member>
+        <member name="T:Coinbase.Commerce.Models.Pagination">
+            <summary>
+            All GET endpoints which return an object list support cursor
+            based pagination with pagination information inside a pagination object.
+            This means that to get all objects, you need to paginate through the
+            results by always using the id of the last resource in the list as a
+            starting_after parameter for the next call. To make it easier, the API
+            will construct the next call into next_uri together with all the currently
+            used pagination parameters. You know that you have paginated all the
+            results when the response’s next_uri is empty. Default limit is set 
+            to 25 but values up to 100 are permitted.
+            </summary>
+        </member>
+        <member name="T:Coinbase.Commerce.Models.Payment">
+            <summary>
+            Payment information
+            </summary>
+        </member>
+        <member name="P:Coinbase.Commerce.Models.Payment.Network">
+            <summary>
+            Blockchain network: "bitcoin", "ethereum", "litecoin" etc.
+            </summary>
+        </member>
+        <member name="P:Coinbase.Commerce.Models.Payment.Status">
+            <summary>
+            Status of the payment
+            </summary>
+        </member>
+        <member name="P:Coinbase.Commerce.Models.Payment.Block">
+            <summary>
+            Blockchain information.
+            </summary>
+        </member>
+        <member name="T:Coinbase.Commerce.Models.PricingType">
+            <summary>
+            If a charge has a fixed_price pricing type, then there will be a pricing object 
+            associated with it. Pricing object is composed of local price which is set by the 
+            merchant in their native fiat currency and corresponding prices in every cryptocurrency 
+            that the merchant has activated for their account
+            </summary>
+        </member>
+        <member name="F:Coinbase.Commerce.Models.PricingType.NoPrice">
+            <summary>
+            If a charge has a fixed_price pricing type, then there will be a pricing object 
+            associated with it. Pricing object is composed of local price which is set by the 
+            merchant in their native fiat currency and corresponding prices in every cryptocurrency 
+            that the merchant has activated for their account
+            </summary>
+        </member>
+        <member name="F:Coinbase.Commerce.Models.PricingType.FixedPrice">
+            <summary>
+            If a charge has a fixed_price pricing type, then there will be a pricing object 
+            associated with it. Pricing object is composed of local price which is set by the 
+            merchant in their native fiat currency and corresponding prices in every cryptocurrency 
+            that the merchant has activated for their account
+            </summary>
+        </member>
+        <member name="T:Coinbase.Commerce.Models.Timeline">
+            <summary>
+            Every charge object has a timeline of status updates.
+            </summary>
+        </member>
+        <member name="P:Coinbase.Commerce.Models.Timeline.Time">
+            <summary>
+            Time of the status update
+            </summary>
+        </member>
+        <member name="P:Coinbase.Commerce.Models.Timeline.Status">
+            <summary>
+            One of the following statuses: NEW, PENDING, COMPLETED, EXPIRED, UNRESOLVED, RESOLVED, CANCELED
+            </summary>
+        </member>
+        <member name="P:Coinbase.Commerce.Models.Timeline.Context">
+            <summary>
+            For charges with UNRESOLVED status, additional context is provided. Context can be one of the following: UNDERPAID, OVERPAID, DELAYED, MULTIPLE, MANUAL, OTHER
+            </summary>
+        </member>
+        <member name="T:Coinbase.Commerce.Models.UpdateCheckout">
+            <summary>
+            When updating a checkout, you do not need to copy the entire
+            object graph from an existing checkout object. Only fill this
+            object with the checkout data that you wish to change.
+            This update object works like a PATCH update.
+            </summary>
+        </member>
+        <member name="M:Coinbase.Commerce.Models.UpdateCheckout.#ctor">
+            <summary>
+            When updating a checkout, you do not need to copy the entire
+            object graph from an existing checkout object. Only fill this
+            object with the checkout data that you wish to change.
+            This update object works like a PATCH update.
+            </summary>
+        </member>
+        <member name="P:Coinbase.Commerce.Models.UpdateCheckout.Name">
+            <summary>
+            Checkout name
+            </summary>
+        </member>
+        <member name="P:Coinbase.Commerce.Models.UpdateCheckout.Description">
+            <summary>
+            More detailed description
+            </summary>
+        </member>
+        <member name="P:Coinbase.Commerce.Models.UpdateCheckout.LocalPrice">
+            <summary>
+            If <seealso cref="T:Coinbase.Commerce.Models.PricingType"/> is fixed_price, then this field will specify the price.
+            Pricing object is composed of local price which is set by the
+            merchant in their native fiat currency and corresponding prices in every
+            cryptocurrency that the merchant has activated for their account
+            </summary>
+        </member>
+        <member name="P:Coinbase.Commerce.Models.UpdateCheckout.RequestedInfo">
+            <summary>
+            Information to collect from the customer
+            </summary>
+        </member>
+        <member name="M:Coinbase.Commerce.Models.UpdateCheckout.ShouldSerializeRequestedInfo">
+            <summary>
+            Called by <seealso cref="N:Newtonsoft.Json"/> to determine if the
+            <seealso cref="P:Coinbase.Commerce.Models.UpdateCheckout.RequestedInfo"/> property should be serialized.
+            </summary>
+        </member>
+        <member name="P:Coinbase.Commerce.Models.UpdateCheckout.RequestEmail">
+            <summary>
+            Helper property. Adds "email" to the RequestedInfo property.
+            </summary>
+        </member>
+        <member name="P:Coinbase.Commerce.Models.UpdateCheckout.RequestName">
+            <summary>
+            Helper property. Adds "name" to the RequestedInfo property.
+            </summary>
+        </member>
+        <member name="T:Coinbase.Commerce.Models.Webhook">
+            <summary>
+            Webhooks make it easier to integrate with Coinbase Commerce by allowing you to
+            subscribe to a set of charge events. You can subscribe to the events by going to
+            your settings page and adding a new webhook subscription. When you create a new
+            subscription, you can specify what events you would like to receive updates for.
+            </summary>
+        </member>
+        <member name="P:Coinbase.Commerce.Models.Webhook.Id">
+            <summary>
+            The Webhook UUID
+            </summary>
+        </member>
+        <member name="P:Coinbase.Commerce.Models.Webhook.ScheduledFor">
+            <summary>
+            Delivery schedule time
+            </summary>
+        </member>
+        <member name="P:Coinbase.Commerce.Models.Webhook.AttemptNumber">
+            <summary>
+            Delivery attempt number
+            </summary>
+        </member>
+        <member name="P:Coinbase.Commerce.Models.Webhook.Event">
+            <summary>
+            Corresponding event object
+            </summary>
+        </member>
+        <member name="T:Coinbase.Commerce.Models.Event">
+            <summary>
+            Events let you know when a charge is updated. When an event occurs we create a 
+            new event object. Retrieve individual events or a list of events. You can also 
+            subscribe to webhook notifications which send event objects directly to an 
+            endpoint on your server.
+            </summary>
+            <summary>
+            Event Resource: https://commerce.coinbase.com/docs/api/#event-resource
+            </summary>
+        </member>
+        <member name="P:Coinbase.Commerce.Models.Event.Id">
+            <summary>
+            Event UUID
+            </summary>
+        </member>
+        <member name="P:Coinbase.Commerce.Models.Event.Resource">
+            <summary>
+            Resource name: "event"
+            </summary>
+        </member>
+        <member name="P:Coinbase.Commerce.Models.Event.Type">
+            <summary>
+            Event type: charge:created, charge:confirmed, charge:failed, charge:delayed, charge:pending
+            </summary>
+        </member>
+        <member name="P:Coinbase.Commerce.Models.Event.ApiVersion">
+            <summary>
+            API version of the data payload
+            </summary>
+        </member>
+        <member name="P:Coinbase.Commerce.Models.Event.CreatedAt">
+            <summary>
+            Event creation time
+            </summary>
+        </member>
+        <member name="P:Coinbase.Commerce.Models.Event.Data">
+            <summary>
+            Event payload: resource of the associated object (e.g. charge) at the time of the event
+            </summary>
+        </member>
+        <member name="M:Coinbase.Commerce.Models.Event.DataAs``1">
+            <summary>
+            Get <seealso cref="P:Coinbase.Commerce.Models.Event.Data"/> as <typeparam name="T" />
+            </summary>
+        </member>
+        <member name="P:Coinbase.Commerce.Models.Event.IsChargeCreated">
+            <summary>
+            New charge is created
+            </summary>
+        </member>
+        <member name="P:Coinbase.Commerce.Models.Event.IsChargeConfirmed">
+            <summary>
+            Charge has been confirmed and the associated payment is completed
+            </summary>
+        </member>
+        <member name="P:Coinbase.Commerce.Models.Event.IsChargeFailed">
+            <summary>
+            Charge failed to complete
+            </summary>
+        </member>
+        <member name="P:Coinbase.Commerce.Models.Event.IsChargeDelayed">
+            <summary>
+            The charge has been delayed
+            </summary>
+        </member>
+        <member name="P:Coinbase.Commerce.Models.Event.IsChargePending">
+            <summary>
+            Charge is pending
+            </summary>
+        </member>
+        <member name="P:Coinbase.Commerce.Models.Event.IsChargeResolved">
+            <summary>
+            Charge is resolved
+            </summary>
+        </member>
+        <member name="T:Coinbase.Commerce.WebhookHelper">
+            <summary>
+            Coinbase Commerce signs every webhook event it sends to your endpoints.
+            The signature is included as a X-CC-Webhook-Signature header. This header
+            contains the SHA256 HMAC signature of the raw request payload, computed
+            using your webhook shared secret as the key. You can obtain your shared
+            webhook secret in settings. Always make sure that you verify the webhook
+            signature before acting on it inside your system.
+            </summary>
+        </member>
+        <member name="M:Coinbase.Commerce.WebhookHelper.IsValid(System.String,System.String,System.String)">
+            <summary>
+            Checks if the Webhook callback is an authentic request from Coinbase.
+            Coinbase Commerce signs every webhook event it sends to your endpoints.
+            The signature is included as a <seealso cref="F:Coinbase.Commerce.HeaderNames.WebhookSignature"/> header.
+            This header contains the SHA256 HMAC signature of the raw request payload,
+            computed using your webhook shared secret as the key. You can obtain your shared
+            webhook secret in settings. Always make sure that you verify the webhook
+            signature before acting on it inside your system.
+            </summary>
+            <param name="sharedSecret">The Webhook shared secret</param>
+            <param name="headerValue">The header value from the Webhook request</param>
+            <param name="jsonBody">The HTTP JSON body of the Webhook request</param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>
